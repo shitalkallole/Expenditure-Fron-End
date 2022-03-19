@@ -1,0 +1,12 @@
+<title>Sign In</title>
+<div>
+    <form>
+        <label>User Id</label>
+        <input type="text" [(ngModel)]="userLogin.userId" name="userId"><br>
+
+        <label>User Password</label>
+        <input type="password" [(ngModel)]="userLogin.currentPassword" name="currentPassword"><br>
+
+        <button (click)="onUserLoginClick()">Sign In</button>
+    </form>
+</div>

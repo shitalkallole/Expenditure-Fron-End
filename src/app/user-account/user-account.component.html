@@ -1,0 +1,36 @@
+<title>My Account</title>
+
+<div>
+
+    <label>Name : </label>
+    <input type="text" [(ngModel)]="updateUser.userName"><br>
+    
+    <label>Email : </label>
+    <input type="email" [(ngModel)]="updateUser.emailId"><br>
+
+    <label>Gender</label>
+    <input type="radio" [(ngModel)]="updateUser.gender" name="gender" value="male" [checked]="status[0]"><label>Male</label>
+    <input type="radio" [(ngModel)]="updateUser.gender" name="gender" value="female" [checked]="status[1]"><label>Female</label>
+    <input type="radio" [(ngModel)]="updateUser.gender" name="gender" value="other" [checked]="status[2]"><label>Other</label><br>
+
+    <button (click)="onUpdateUserInformationClick()">Update Information</button>
+    
+</div>
+
+<div>
+
+    <label>Old Password : </label>
+    <input type="text" [(ngModel)]="updatePassword.currentPassword"><br>
+
+    <label>New Password : </label>
+    <input #newPassword type="text"><br>
+
+    <label>Confirm Password : </label>
+    <input #confirmPassword type="text"><br>
+
+    <button (click)="onUpdateUserPasswordClick(newPassword.value,confirmPassword.value)">Update Password</button>
+</div>
+
+<div>
+    <button (click)="onDeleteMyAccountClick()">Delete My Account</button>
+</div>

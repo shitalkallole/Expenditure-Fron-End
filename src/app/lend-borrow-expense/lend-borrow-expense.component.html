@@ -1,0 +1,214 @@
+<title>Manage Lend-Borrow Expense</title>
+<div>
+    <form>
+        <label>Select Date</label>
+        <input type="date" [(ngModel)]="lendBorrowExpenseRequest.activityDate" name="activityDate"><br>
+
+        <label>Select Category</label>
+        <select [(ngModel)]="lendBorrowExpenseRequest.categoryId" name="category">
+            <option *ngFor="let category of categoryList" value="{{category.categoryId}}">{{category.categoryName}}</option>
+        </select><br>
+
+        <label>Enter Amount</label>
+        <input type="number" [(ngModel)]="lendBorrowExpenseRequest.amount" name="amount"><br>
+
+        <label>Enter Comment</label>
+        <input type="text" [(ngModel)]="lendBorrowExpenseRequest.comment" name="comment"><br>
+
+        <label>Select Friend</label>
+        <select [(ngModel)]="lendBorrowExpenseRequest.friendId" name="friend">
+            <option *ngFor="let friend of friendList" value="{{friend.friendId}}">{{friend.friendName}}</option>
+        </select><br>
+
+        <input type="radio" [(ngModel)]="lendBorrowExpenseRequest.lendOrBorrow" value="1" name="lendOrBorrow">Lend
+        <input type="radio" [(ngModel)]="lendBorrowExpenseRequest.lendOrBorrow" value="2" name="lendOrBorrow">Borrow<br>
+    
+        <button (click)="onCancelClick()">Cancel</button>
+        <button (click)="onEntryClick()">Entry</button>
+
+    </form>
+</div>
+<div>
+    <form>
+        <label>Start Date</label>
+        <input type="date" [(ngModel)]="betweenDatesRequestForLendBorrowShowAndDelete.startDate" name="startDate">
+
+        <label>End Date</label>
+        <input type="date" [(ngModel)]="betweenDatesRequestForLendBorrowShowAndDelete.endDate" name="endDate">
+
+        <label>Select Friend</label>
+        <select [(ngModel)]="betweenDatesRequestForLendBorrowShowAndDelete.friendId" name="friend">
+            <option value="0">None</option>
+            <option *ngFor="let friend of friendList" value="{{friend.friendId}}">{{friend.friendName}}</option>
+        </select>
+
+        <button (click)="onShowLendBorrowExpenseBetweenDatesClick()">Show</button>
+        <button (click)="onDeleteLendBorrowExpenseBetweenDatesClick()">Delete</button>
+    </form>
+
+    <ng-container *ngIf="lendBorrowExpenseList.length!=0;else emptyLendBorrowExpenseList">
+        <table>
+            <tr>
+                <th>No</th>
+                <th>Date</th>
+                <th>Category Name</th>
+                <th>Amount</th>
+                <th>Comment</th>
+                <th>Friend Name</th>
+                <th>Lend Or Borrow</th>
+            </tr>
+            <tr *ngFor="let record of lendBorrowExpenseList;let i=index">
+                <td>{{i+1}}</td>
+                <td><input type="date" value="{{record.activityDate | date:'yyyy-MM-dd'}}" #activityDate disabled></td>
+                <td>
+                    <select #categoryId disabled>
+                        <ng-container *ngFor="let category of categoryList"> 
+    
+                            <ng-container *ngIf="category.categoryId==record.category.categoryId;else elseBlock">
+                                <option value="{{category.categoryId}}" selected>{{category.categoryName}}</option>
+                            </ng-container>  
+    
+                            <ng-template #elseBlock>
+                                <option value={{category.categoryId}}>{{category.categoryName}}</option>   
+                            </ng-template>
+    
+                        </ng-container>
+                    </select>
+                </td>
+    
+                <td><input type="text" value="{{record.amount | number:'0.1-2'}}" #amount disabled></td>
+                <td><input type="text" value="{{record.comment}}" #comment disabled></td>
+                <td>
+                    <select #friendId disabled>
+                        <ng-container *ngFor="let friend of friendList">
+    
+                            <ng-container *ngIf="friend.friendId==record.friend.friendId;else elseBlock">
+                                <option value="{{friend.friendId}}" selected>{{friend.friendName}}</option>
+                            </ng-container>
+    
+                            <ng-template #elseBlock>
+                                <option value="{{friend.friendId}}">{{friend.friendName}}</option>
+                            </ng-template>
+            
+                        </ng-container>
+                    </select>
+                </td>
+                <td>
+                    <select #lendOrBorrow disabled>
+                        <ng-container *ngIf="record.lendOrBorrow==1;else elseBlock">
+                            <option value="1" selected>Lend</option>
+                            <option value="2">Borrow</option>
+                        </ng-container>
+                        <ng-template #elseBlock>
+                            <option value="1">Lend</option>
+                            <option value="2" selected>Borrow</option>
+                        </ng-template>
+                    </select>          
+                </td>
+    
+                <ng-container *ngIf="lendBorrowExpenseMap.get(record.transactionId)==1;else showUpdateAndCancelButton">
+                    <td><button (click)="onEditLendBorrowExpenseClick(record.transactionId,activityDate,categoryId,amount,comment,friendId,lendOrBorrow)">Edit</button></td>
+                    <td><button (click)="onDeleteLendBorrowExpenseClick(record.transactionId,i)">Delete</button></td>        
+                </ng-container>
+                <ng-template #showUpdateAndCancelButton>
+                    <td><button (click)="onUpdateLendBorrowExpenseClick(record.transactionId,activityDate,categoryId,amount,comment,friendId,lendOrBorrow,i)">Update</button></td>
+                    <td><button (click)="onCancelLendBorrowExpenseClick(record.transactionId,activityDate,categoryId,amount,comment,friendId,lendOrBorrow,i)">Cancel</button></td>
+                </ng-template>
+                
+            </tr>
+        </table>
+    </ng-container>
+    <ng-template #emptyLendBorrowExpenseList>
+        <small>No records found between given dates</small>
+    </ng-template>
+</div>
+
+<div>
+    <div>
+        <form>
+            <label>Start Date</label>
+            <input type="date" [(ngModel)]="betweenDatesRequestForLendBorrowCalculate.startDate" name="startDate">
+
+            <label>End Date</label>
+            <input type="date" [(ngModel)]="betweenDatesRequestForLendBorrowCalculate.endDate" name="endDate">
+
+            <label>Select Friend</label>
+            <select [(ngModel)]="betweenDatesRequestForLendBorrowCalculate.friendId" name="friend">
+                <option value="0">None</option>
+                <option *ngFor="let friend of friendList" value="{{friend.friendId}}">{{friend.friendName}}</option>
+            </select>
+
+            <button (click)="onCalculateLendBorrowExpenseBetweenDatesClick()">Calculate</button>
+        </form>
+    </div>
+    <div>
+        <ng-container *ngIf="lendBorrowExpenseCalculateList.length!=0;else emptyLendBorrowExpenseCalculateList">
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Friend Name</th>
+                    <th>Lend Amount</th>
+                    <th>Borrow Amount</th>
+                    <th>Final Amount</th>
+                </tr>
+                <tr *ngFor="let record of lendBorrowExpenseCalculateList; let i = index">
+                    <td>{{i+1}}</td>
+                    <td>{{friendMap.get(record.friendId)}}</td>
+                    <td>{{record.lendAmount | number:'0.1-2'}}</td>
+                    <td>{{record.borrowAmount | number:'0.1-2'}}</td>
+                    <ng-container *ngIf="record.finalAmount<0;else elseBlock">
+                        <td style="color: red;">{{record.finalAmount | number:'0.1-2'}}</td>        
+                    </ng-container>
+                    <ng-template #elseBlock>
+                        <td style="color:green;">{{record.finalAmount | number:'0.1-2'}}</td>
+                    </ng-template>
+                </tr>
+            </table>
+        </ng-container>
+        <ng-template #emptyLendBorrowExpenseCalculateList>
+            <small>No results to display</small>
+        </ng-template>
+    </div>
+</div>
+<div>
+    <div>
+        <form>
+            <label>Start Date</label>
+            <input type="date" [(ngModel)]="betweenDatesRequestForLendCategory.startDate" name="startDate">
+
+            <label>End Date</label>
+            <input type="date" [(ngModel)]="betweenDatesRequestForLendCategory.endDate" name="endDate">
+
+            <label>Select Category</label>
+            <select [(ngModel)]="betweenDatesRequestForLendCategory.categoryId" name="category">
+                <option *ngFor="let category of categoryList" value="{{category.categoryId}}">{{category.categoryName}}</option>
+            </select>
+
+            <button (click)="onShowLendExpenseForCategoryClick()">Show</button>
+        </form>
+    </div>
+    <div>
+        <ng-container *ngIf="lendExpenseForCategoryList.length!=0;else emptyLendExpenseForCategoryList">
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Date</th>
+                    <th *ngFor="let friend of friendList">{{friend.friendName}}</th>
+                    <th>Total Amount</th>
+                </tr>
+                <tr *ngFor="let record of lendExpenseForCategoryList;let i=index">
+                    <td>{{i+1}}</td>
+                    <td>{{record.date | date:'yyyy-MM-dd'}}</td>
+                    <td *ngFor="let friend of friendList">
+                        {{record.friendMap.get(friend.friendId)}}
+                    </td>
+                    <td>{{record.totalAmount}}</td>
+                </tr>
+                <tr>Final Amount : {{finalAmountOflendExpenseForCategory}}</tr>
+            </table>
+        </ng-container>
+        <ng-template #emptyLendExpenseForCategoryList>
+            <small>No results for display</small>
+        </ng-template>
+    </div>
+</div>

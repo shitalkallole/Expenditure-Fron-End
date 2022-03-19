@@ -1,0 +1,17 @@
+<title>Home Page</title>
+<div>
+    <label>Id : </label><label>{{userData.id}}</label><br>
+    <label>Name : </label><label>{{userData.name}}</label><br>
+    <label>Email : </label><label>{{userData.emailId}}</label><br>
+    <label>Gender : </label><label>{{userData.gender}}</label><br>
+</div>
+<div>
+    <button (click)="onSignoutUserClick()">signout</button>
+</div>
+<nav>
+    <a routerLink="/home/personalexpense">Personal Expense Management</a>
+    <a routerLink="/home/lendborrowexpense">Lend Borrow Expense Management</a>
+    <a routerLink="/home/managecategoryandfrienddata">Manage Category and Friend</a>
+    <a routerLink="/home/myaccount">My Account</a>
+</nav>
+<router-outlet></router-outlet>

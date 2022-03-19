@@ -1,0 +1,68 @@
+<title>Mange Category and Friend Data</title>
+<div>
+    <div>
+        <h3>Category List</h3>
+        <label>Add Category</label><input type="text" [(ngModel)]="categoryRequest.categoryName">
+        <button (click)="onAddCategoryClick()">Add</button>
+    </div>
+    <div>
+        <ng-container *ngIf="categoryList.length!=0;else emptyCategoryList">
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Name</th>
+                </tr>
+                <tr *ngFor="let record of categoryList;let i=index">
+                    <td>{{i+1}}</td>
+                    <td><input #updatedCategoryData type="text" value="{{record.categoryName}}" disabled></td>
+    
+                    <ng-container *ngIf="categoryMapToFindWhichButtonsToShow.get(record.categoryId)==1;else showUpdateAndCancelButton">
+                        <td><button (click)="onEditCategoryClick(record.categoryId,updatedCategoryData,i)">Edit</button></td>
+                        <td><button (click)="onDeleteCategoryClick(record.categoryId,i)">Delete</button></td>
+                    </ng-container>
+                    <ng-template #showUpdateAndCancelButton>
+                        <td><button (click)="onUpdateCategoryClick(record.categoryId,updatedCategoryData,i)">Update</button></td>
+                        <td><button (click)="onCancelCategoryClick(record.categoryId,updatedCategoryData,i)">Cancel</button></td>
+                    </ng-template>
+                </tr>
+            </table>
+        </ng-container>
+        <ng-template #emptyCategoryList>
+            <small>Please create categories to view</small>
+        </ng-template>
+        
+    </div>
+</div>
+
+<div>
+    <div>
+        <h3>Friend List</h3>
+        <label>Add Friend</label><input type="text" [(ngModel)]="friendRequest.friendName">
+        <button (click)="onAddFriendClick()">Add</button>
+    </div>
+    <div>
+        <ng-container *ngIf="friendList.length!=0;else emptyFriendList">
+            <table>
+                <tr>
+                    <th>No</th>
+                    <th>Name</th>
+                </tr>
+                <tr *ngFor="let record of friendList;let i=index">
+                    <td>{{i+1}}</td>
+                    <td><input #updatedFriendData type="text" value="{{record.friendName}}" disabled></td>
+                    <ng-container *ngIf="friendMapToFindWhichButtonsToShow.get(record.friendId)==1;else showUpdateAndCancelButton">
+                        <td><button (click)="onEditFriendClick(record.friendId,updatedFriendData)">Edit</button></td>
+                        <td><button (click)="onDeleteFriendClick(record.friendId,i)">Delete</button></td>
+                    </ng-container>
+                    <ng-template #showUpdateAndCancelButton>
+                        <td><button (click)="onUpdateFriendClick(record.friendId,updatedFriendData,i)">Update</button></td>
+                        <td><button (click)="onCancelFriendClick(record.friendId,updatedFriendData,i)">Cancel</button></td>
+                    </ng-template>
+                </tr>
+            </table>
+        </ng-container>
+        <ng-template #emptyFriendList>
+            <small>Please create friends to view</small>
+        </ng-template>
+    </div>
+</div>

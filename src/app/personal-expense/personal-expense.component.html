@@ -1,0 +1,109 @@
+<title>Manage Personal Expense</title>
+<form>
+    
+    <label>Select Date</label>
+    <input type="date" [(ngModel)]="personalExpenseModel.activityDate" name="activityDate"><br>
+
+    <label>Select Category</label>
+    <select [(ngModel)]="personalExpenseModel.categoryId" name="category">
+        <option *ngFor="let category of categoryList" value="{{category.categoryId}}">{{category.categoryName}}</option>
+    </select><br>
+
+    <label>Enter Amount</label>
+    <input type="number" [(ngModel)]="personalExpenseModel.amount" name="amount"><br>
+
+    <label>Enter Comment</label>
+    <input type="text" [(ngModel)]="personalExpenseModel.comment" name="comment"><br>
+    
+    <button (click)="onCancelClick()">Cancel</button>
+    <button (click)="onEntryClick()">Entry</button>
+
+</form>
+
+<div>
+    <form>
+    
+        <label>Start Date</label>
+        <input type="date" [(ngModel)]="betweenDatesRequestShowAndDelete.startDate" name="startDate">
+
+        <label>End Date</label>
+        <input type="date" [(ngModel)]="betweenDatesRequestShowAndDelete.endDate" name="endDate">
+
+        <button (click)="onShowPersonalExpenseBetweenDatesClick()">Show</button>
+        <button (click)="onDeletePersonalExpenseBetweenDatesClick()">Delete</button>
+
+    </form>
+    <ng-container *ngIf="personalExpenseList.length!=0;else emptyPersonalExpenseList">
+        <table>
+            <tr>
+                <th>No</th>
+                <th>Date</th>
+                <th>Category Name</th>
+                <th>Amount</th>
+                <th>Comment</th>
+            </tr>
+            <tr *ngFor="let record of personalExpenseList; let i = index">
+                <td>{{i+1}}</td>
+                <td><input type="date" value="{{record.activityDate | date:'yyyy-MM-dd'}}" #activityDate disabled></td>
+
+                <select #categoryId disabled>
+                    <ng-container *ngFor="let category of categoryList">
+                        <ng-container *ngIf="category.categoryId==record.category.categoryId;else elseBlock">
+                            <option  value={{category.categoryId}} selected>{{category.categoryName}}</option>     
+                        </ng-container>
+                        <ng-template #elseBlock>
+                            <option value={{category.categoryId}}>{{category.categoryName}}</option>   
+                        </ng-template>
+                    </ng-container>
+                </select>
+                
+                <td><input type="text" value="{{record.amount | number:'0.1-2'}}" #amount disabled></td>
+                <td><input type="text" value="{{record.comment}}" #comment disabled></td>
+
+                <ng-container *ngIf="personalExpenseMap.get(record.transactionId)==1;else showUpdateAndCancelButton"> 
+                    <td><button (click)="onEditPersonalExpenseClick(record.transactionId,activityDate,categoryId,amount,comment)">Edit</button></td>
+                    <td><button (click)="onDeletePersonalExpenseClick(record.transactionId,i)">delete</button></td>
+                </ng-container>
+                <ng-template #showUpdateAndCancelButton>
+                    <td><button (click)="onUpdatePersonalExpenseClick(record.transactionId,activityDate,categoryId,amount,comment,i)">Update</button></td>    
+                    <td><button (click)="onCancelPersonalExpenseClick(record.transactionId,activityDate,categoryId,amount,comment,i)">Cancel</button></td>
+                </ng-template>
+            </tr>
+     </table>
+    </ng-container>
+    <ng-template #emptyPersonalExpenseList>
+        <small>No records found between given dates</small>
+    </ng-template>
+</div>
+<div>
+    <form>
+            <label>Start Date</label>
+            <input type="date" [(ngModel)]="betweenDatesRequestCalculate.startDate" name="startDate">
+    
+            <label>End Date</label>
+            <input type="date" [(ngModel)]="betweenDatesRequestCalculate.endDate" name="endDate">
+    
+            <button (click)="onCalculatePersonalExpenseBetweenDatesClick()">Calculate</button>
+    
+    </form>
+
+    <ng-container *ngIf="personalExpenseCalculateList.length!=0;else emptyPersonalExpenseCalculateList">
+        <table>
+            <tr>
+                <th>No</th>
+                <th>Category Name</th>
+                <th>Amount</th>
+            </tr>
+            <tr *ngFor="let record of personalExpenseCalculateList; let i = index">
+                <td>{{i+1}}</td>
+                <td>{{categoryMap.get(record.categoryId)}}</td>
+                <td>{{record.amount | number:'0.1-2'}}</td>
+            </tr>
+        </table>
+    </ng-container>
+    
+    <ng-template #emptyPersonalExpenseCalculateList>
+        <small>No Results to display</small>
+    </ng-template>
+    
+</div>
